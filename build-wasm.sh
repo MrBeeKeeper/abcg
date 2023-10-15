@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eu pipefail
 
 BUILD_TYPE=${1:-Release}
 CMAKE_EXTRA_ARGS=${2:-""}
@@ -12,10 +12,6 @@ mkdir -p build && cd build
 emcmake cmake -DGRAPHICS_API=OpenGL -DCMAKE_BUILD_TYPE="$BUILD_TYPE" $CMAKE_EXTRA_ARGS ..
 
 # Build
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS
-  NUM_PROCESSORS="$(sysctl -n hw.ncpu)"
-else
-  NUM_PROCESSORS="$(nproc)"
-fi
+NUM_PROCESSORS="$(nproc)"
+
 cmake --build . --config "$BUILD_TYPE" -- -j "$NUM_PROCESSORS"
